@@ -1,7 +1,7 @@
 pipeline {
     environment {
         registry = "moetazkallali/exam"
-        registryCredential = 'moetazkallali'
+        registryCredential = 'dockerhub_id'
         dockerImage = 'exam'
     }
     agent any
@@ -51,26 +51,26 @@ pipeline {
                 sh 'mvn deploy -Dmaven.test.skip=true'
                   }
         }
-        stage('BUILD') { 
-            steps { 
-                script { 
-                    timestamps {
-                    dockerImage = docker.build registry
+        stage('Building our image') {
+            steps {
+                script {
+                    dockerImage = docker.build registry + ":$BUILD_NUMBER"
+                }
+            }
+        }
+        stage('Deploy our image') {
+            steps {
+                script {
+                    docker.withRegistry( '', registryCredential ) {
+                        dockerImage.push()
                     }
                 }
-            } 
+            }
         }
-        stage('PUSH DOCKERHUB') { 
-            steps { 
-                script {
-                        timestamps {
-						  docker.withRegistry ('', registryCredential ) {
-							  dockerImage.push()
-                        }
-                    } 
-                }
-            } 
-            
+        stage('Cleaning up') {
+            steps {
+                sh "docker rmi $registry:$BUILD_NUMBER"
+            }
         }
    }
 }
