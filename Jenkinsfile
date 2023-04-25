@@ -1,6 +1,10 @@
 pipeline {
+    environment {
+        registry = "moetazkallali/exam"
+        registryCredential = 'moetazkallali'
+        dockerImage = 'exam'
+    }
     agent any
-    
     stages {
         stage('Git') {
             steps {
@@ -46,6 +50,27 @@ pipeline {
             steps {
                 sh 'mvn deploy -Dmaven.test.skip=true'
                   }
-        }          
+        }
+        stage('BUILD') { 
+            steps { 
+                script { 
+                    timestamps {
+                    dockerImage = docker.build registry
+                    }
+                }
+            } 
+        }
+        stage('PUSH DOCKERHUB') { 
+            steps { 
+                script {
+                        timestamps {
+						  docker.withRegistry ('', registryCredential ) {
+							  dockerImage.push()
+                        }
+                    } 
+                }
+            } 
+            
+        }
    }
 }
