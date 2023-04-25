@@ -44,7 +44,7 @@ pipeline {
         }    
         stage('MVN NEXUS'){
             steps {
-                sh 'sudo mvn deploy -Dmaven.test.skip=true'
+                sh 'mvn deploy -Dmaven.test.skip=true'
                   }
         }          
    }
