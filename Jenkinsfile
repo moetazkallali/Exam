@@ -37,9 +37,9 @@ pipeline {
         stage('MVN SONARQUBE'){
             steps{
                 sh 'mvn sonar:sonar \
-  -Dsonar.projectKey=JenkinsAchatProject \
+  -Dsonar.projectKey=JenkinsExamProject \
   -Dsonar.host.url=http://192.168.1.120:9000 \
-  -Dsonar.login=372e3ff11263b437e5042ec0fa5aed1d7ce5fbcd'
+  -Dsonar.login=47e5a816defea731387d72ad9707363b75676b29
                  }
         }    
         stage('MVN NEXUS'){
